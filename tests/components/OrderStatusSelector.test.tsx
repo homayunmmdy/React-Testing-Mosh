@@ -55,16 +55,16 @@ describe("OrderStatusSelector", () => {
   );
 
   it("should call onChange with 'new' when the New option is selected", async () => {
-    const { trigger, user, onChange, getOption } = renderComponent();
+    const {trigger, user, onChange, getOption} = renderComponent();
     await user.click(trigger);
 
     const processedOption = await getOption(/processed/i);
     await user.click(processedOption);
 
-    await user.click(trigger)
+    await user.click(trigger);
     const newOption = await getOption(/new/i);
     await user.click(newOption);
 
-    expect(onChange).toHaveBeenCalledWith(/new/i);
-  });
+    expect(onChange).toHaveBeenCalledWith('new');
+  })
 });
