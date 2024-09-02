@@ -10,6 +10,7 @@ import BrowseProducts from "../../src/pages/BrowseProductsPage";
 import { CartProvider } from "../../src/providers/CartProvider";
 import { db, getProductByCategory } from "../mocks/db";
 import { simulateDelay, simulateEror } from "../utils";
+import AllProviders from "../AllProvider";
 
 describe("BrowseProductsPage", () => {
   const categories: Category[] = [];
@@ -132,13 +133,7 @@ describe("BrowseProductsPage", () => {
 });
 
 const renderComponent = () => {
-  render(
-    <CartProvider>
-      <Theme>
-        <BrowseProducts />
-      </Theme>
-    </CartProvider>
-  );
+  render(<BrowseProducts />, { wrapper: AllProviders });
 
   const getProductSkeleton = () =>
     screen.queryByRole("progressbar", { name: /products/i });
