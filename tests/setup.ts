@@ -17,7 +17,7 @@ vi.mock('@auth0/auth0-react', () => {
       user: undefined
     }),
     Auth0Provider: ({children}: PropsWithChildren) => children  ,
-    withAuthenticationRequired: vi.fn()
+    withAuthenticationRequired: (component: React.ReactNode) => component
   }
 })
 
