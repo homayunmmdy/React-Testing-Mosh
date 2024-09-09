@@ -18,14 +18,36 @@ describe("QuantitySelector.tsx", () => {
       </CartProvider>
     );
 
+    const getAddToCardButton = () =>
+      screen.queryByRole("button", { name: /add to cart/i });
+    const getQuntityControls = () => ({
+      quantity: screen.queryByRole("status"),
+      decrementButton: screen.queryByRole("button", { name: "-" }),
+      incrementButton: screen.queryByRole("button", { name: "+" }),
+    });
+    const user = userEvent.setup();
+
+    const addToCard = async () => {
+      const button = getAddToCardButton();
+      await user.click(button!);
+    };
+
+    const incrementQuantity = async () => {
+      const { incrementButton } = getQuntityControls();
+      await user.click(incrementButton!);
+    };
+
+    const decrementQuantity = async () => {
+      const { decrementButton } = getQuntityControls();
+      await user.click(decrementButton!);
+    };
+
     return {
-      getAddToCardButton: () => screen.queryByRole("button", { name: /add to cart/i }),
-      getQuntityControls: () => ({
-        quantity: screen.queryByRole("status"),
-        decrementButton: screen.queryByRole("button", { name: "-" }),
-        incrementButton: screen.queryByRole("button", { name: "+" }),
-      }),
-      user: userEvent.setup(),
+      getAddToCardButton,
+      getQuntityControls,
+      addToCard,
+      incrementQuantity,
+      decrementQuantity,
     };
   };
   it("should render the Add to Card button", () => {
@@ -35,9 +57,10 @@ describe("QuantitySelector.tsx", () => {
   });
 
   it("should add the product to the cart", async () => {
-    const { getAddToCardButton, user, getQuntityControls } = renderComponents();
+    const { getAddToCardButton, addToCard, getQuntityControls } =
+      renderComponents();
 
-    await user.click(getAddToCardButton()!);
+    await addToCard();
 
     const { quantity, decrementButton, incrementButton } = getQuntityControls();
     expect(quantity).toHaveTextContent("1");
@@ -48,33 +71,44 @@ describe("QuantitySelector.tsx", () => {
   });
 
   it("should increment the qantity", async () => {
-    const { getAddToCardButton, user, getQuntityControls } = renderComponents();
-    await user.click(getAddToCardButton()!);
+    const { incrementQuantity, addToCard, getQuntityControls } =
+      renderComponents();
+    await addToCard();
 
-    const { incrementButton, quantity } = getQuntityControls();
-    await user.click(incrementButton!);
+    await incrementQuantity();
 
+    const { quantity } = getQuntityControls();
     expect(quantity).toHaveTextContent("2");
   });
 
   it("should decrement the qantity", async () => {
-    const { getAddToCardButton, user, getQuntityControls } = renderComponents();
-    await user.click(getAddToCardButton()!);
-    const { incrementButton, decrementButton, quantity } = getQuntityControls();
-    await user.click(incrementButton!);
+    const {
+      incrementQuantity,
+      decrementQuantity,
+      addToCard,
+      getQuntityControls,
+    } = renderComponents();
+    await addToCard();
+    await incrementQuantity();
 
-    await user.click(decrementButton!);
+    await decrementQuantity();
 
+    const { quantity } = getQuntityControls();
     expect(quantity).toHaveTextContent("1");
   });
 
   it("should remove the product from the card", async () => {
-    const { getAddToCardButton, user, getQuntityControls } = renderComponents();
-    await user.click(getAddToCardButton()!);
-    const {incrementButton, decrementButton, quantity } = getQuntityControls();
+    const {
+      getAddToCardButton,
+      decrementQuantity,
+      addToCard,
+      getQuntityControls,
+    } = renderComponents();
+    await addToCard();
 
-    await user.click(decrementButton!);
+    await decrementQuantity();
 
+    const { incrementButton, decrementButton, quantity } = getQuntityControls();
     expect(quantity).not.toBeInTheDocument();
     expect(decrementButton).not.toBeInTheDocument();
     expect(incrementButton).not.toBeInTheDocument();
