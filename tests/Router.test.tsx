@@ -1,26 +1,18 @@
-import { render, screen } from "@testing-library/react";
-import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import routes from "../src/routes";
+import { screen } from "@testing-library/react";
+import { navigateTo } from "./utils";
 
 describe("Router", () => {
   it("should render the home page for /", () => {
-    const router = createMemoryRouter(routes, {
-      initialEntries: ["/"],
-    });
+    navigateTo("/");
 
-    render(<RouterProvider router={router}></RouterProvider>);
-
-    expect(screen.getByRole('heading', {name : /home/i})).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /home/i })).toBeInTheDocument();
   });
-  
+
   it("should render the products page for /products", () => {
-    const router = createMemoryRouter(routes, {
-      initialEntries: ["/products"],
-    });
+    navigateTo("/products");
 
-    render(<RouterProvider router={router}></RouterProvider>);
-
-    expect(screen.getByRole('heading', {name : /products/i})).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /products/i })
+    ).toBeInTheDocument();
   });
-
 });
